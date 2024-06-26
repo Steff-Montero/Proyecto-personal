@@ -85,6 +85,7 @@ Para contribuir, por favor sigue las siguientes instrucciones:
 
 ### Tecnologías
 ![Python](https://img.shields.io/badge/-Python-0066CC)
+![JupyterNotebook](https://img.shields.io/badge/-JupyterNotebook-0066CC)
 
 ## Licencia
 
