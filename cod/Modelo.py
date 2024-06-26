@@ -11,6 +11,29 @@ import seaborn as sns
 class EstimacionBootstrapping:
     def __init__(self, model = LogisticRegression(random_state = 0, max_iter = 200), data = 'titanic', caract_entrenamiento = None,
                  caract_prueba = None, result_entrenamiento = None, result_prueba = None):
+        '''
+        Inicializa las variables del objeto
+
+        Parameters
+        ----------
+        model : TYPE, optional
+            Modelo al cual se le quiere estimar el error. The default is LogisticRegression(random_state = 0, max_iter = 200).
+        data : TYPE, optional
+            Datos de la librería seaborn. The default is 'titanic'.
+        caract_entrenamiento : TYPE, optional
+            Variables descriptivas que se usaran para el entrenamiento del modelo. The default is None.
+        caract_prueba : TYPE, optional
+            Variables descriptivas que se usaran para el test de predicción del modelo. The default is None.
+        result_entrenamiento : TYPE, optional
+            Variable objetivo que se usara para el entrenamiento del modelo. The default is None.
+        result_prueba : TYPE, optional
+            Variable objetivo que se usara para el test de predicción del modelo. The default is None.
+
+        Returns
+        -------
+        None.
+
+        '''
         self.model = model
         self.data = sns.load_dataset(data)
         self.__caract_entrenamiento = caract_entrenamiento
@@ -20,21 +43,83 @@ class EstimacionBootstrapping:
         self.__precision = []
     
     def get_model(self):
+        '''
+        Retorna el modelo que se planea estimar el error.
+
+        Returns
+        -------
+        object
+            Modelo utilizado para la estimación.
+
+        '''
         return self.model
     
     def set_model(self, new_model):
+        '''
+        Cambia el modelo que se planea estimar.
+
+        Parameters
+        ----------
+        new_model : object
+            Nuevo modelo que se estimara el error.
+
+        Returns
+        -------
+        None.
+
+        '''
         self.model = new_model
     
     def get_data(self):
+        '''
+        Retorna un data frame de la base utilizada para el modelo
+
+        Returns
+        -------
+        DataFrame
+            Data frame usado en el modelo.
+
+        '''
         return self.data
     
     def set_data(self, new_data):
         self.data = sns.load_dataset(new_data)
         
     def imputar(self, variables = ['survived', 'age', 'pclass', 'fare']):
+        '''
+        Imputa los valores nulos de la base de datos del modelo
+
+        Parameters
+        ----------
+        variables : List, optional
+            Variables que son de interes para la modelacion. The default is ['survived', 'age', 'pclass', 'fare'].
+
+        Returns
+        -------
+        None.
+
+        '''
         self.data = self.data[variables].dropna()
 
     def categorica_a_numerica(self, metodo = 'label'):
+        '''
+        Convierte las columnas categoricas en númericas.
+
+        Parameters
+        ----------
+        metodo : string, optional
+            Método con el que se trataran las variables categoricas, puede ser 'label' o 'onehot'. The default is 'label'.
+
+        Raises
+        ------
+        ValueError
+            Retorna un mensaje en caso de no usar ninguno de los métodos prederminados.
+
+        Returns
+        -------
+        None.
+
+        '''
         if metodo == 'label':
             le = LabelEncoder()
             for col in self.data.select_dtypes(include = ['object', 'category']).columns:
@@ -45,6 +130,22 @@ class EstimacionBootstrapping:
             raise ValueError("El método debe ser 'label' o 'onehot'.")
         
     def dividir_datos(self, variables_descriptivas = ['age', 'pclass', 'fare'], variable_objetivo = 'survived'):
+        '''
+        Separa la data en variables caracteristicas y objetivo y luego toma una
+        muestra para entrenamiento y otra para prueba.
+
+        Parameters
+        ----------
+        variables_descriptivas : list, optional
+            Variables caracteristicas que describen la variable a predecir. The default is ['age', 'pclass', 'fare'].
+        variable_objetivo : TYPE, optional
+            Variable a predecir. The default is 'survived'.
+
+        Returns
+        -------
+        None.
+
+        '''
         caracteristicas = self.data[variables_descriptivas]
         objetivo = self.data[variable_objetivo]
         self.__caract_entrenamiento, self.__caract_prueba, self.__result_entrenamiento, self.__result_prueba = train_test_split(caracteristicas,
@@ -52,6 +153,14 @@ class EstimacionBootstrapping:
                                                                                                                         train_size = 0.7,
                                                                                                                         random_state = 42)
     def entrenar_modelo(self):
+        '''
+        Entrena el modelo con la muestra de entrenamiento
+
+        Returns
+        -------
+        None.
+
+        '''
         self.model.fit(self.__caract_entrenamiento, self.__result_entrenamiento.values.ravel())
         
     def proyeccion(self):
@@ -65,6 +174,19 @@ class EstimacionBootstrapping:
         print(classification_report(self.__result_prueba, result_predic_prueba))
         
     def evaluacion_bootstrap(self, iteraciones = 1000):
+        '''
+        Estima el error por medio de bootstrapping
+
+        Parameters
+        ----------
+        iteraciones : TYPE, optional
+            Cantidad de iteraciones utilizadas para el bootstrapping. The default is 1000.
+
+        Returns
+        -------
+        None.
+
+        '''
         for i in range(iteraciones):
             caracteristicas_bs, resultados_bs = resample(self.__caract_entrenamiento, self.__result_entrenamiento.values.ravel(), replace = True)
             result_pred = self.model.predict(caracteristicas_bs)
