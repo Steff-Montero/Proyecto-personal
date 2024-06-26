@@ -85,9 +85,9 @@ class EstimacionBootstrapping:
     def set_data(self, new_data):
         self.data = sns.load_dataset(new_data)
         
-    def imputar(self, variables = ['survived', 'age', 'pclass', 'fare']):
+    def limpieza(self, variables = ['survived', 'age', 'pclass', 'fare']):
         '''
-        Imputa los valores nulos de la base de datos del modelo
+        Selecciona solo las variables que se quieren estudiar y elimina los valores nulos.
 
         Parameters
         ----------
@@ -199,18 +199,23 @@ class EstimacionBootstrapping:
         plt.show()
         
         mediana = np.percentile(self.__precision, 50)
+        mean = np.mean(self.__precision)
         alpha = 5
         interval_confi_inf = np.percentile(self.__precision, alpha / 2)
         interval_confi_sup = np.percentile(self.__precision, 100 - alpha / 2)
         
-        print(f"La precisión del modelo se informa en el conjunto de prueba. Se utilizaron"
+        fig, ax = plt.subplots()
+        sns.kdeplot(self.__precision, ax = ax)
+        ax.set_xlabel('Precisión')
+        ax.axvline(mean, linestyle = '--', color = 'blue')
+        ax.axvline(mediana, linestyle = '--', color = 'red')
+        ax.axvline(interval_confi_inf, linestyle = '--', color = 'green')
+        ax.axvline(interval_confi_sup, linestyle = '--', color = 'green')
+        fig.savefig('../res/grafico.png')
+        
+        plt.show()
+        
+        print(f"La precisión del modelo se informa en el conjunto de prueba. Se utilizaron "
               f"1000 muestras de bootstrap para calcular los intervalos de confianza al 95%. \n"
               f"La precisión mediana es {mediana: .2f} con un intervalo de confianza al 95% de "
               f"[{interval_confi_inf: .2f}, {interval_confi_sup: .2f}]")
-        
-        sns.kdeplot(self.__precision)
-        plt.xlabel('Precisión')
-        plt.axvline(mediana, 0, 14, linestyle = '--', color = 'red')
-        plt.axvline(interval_confi_inf, 0, 14, linestyle = '--', color = 'red')
-        plt.axvline(interval_confi_sup, 0, 14, linestyle = '--', color = 'red')
-        plt.show()
