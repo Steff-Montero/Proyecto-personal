@@ -107,3 +107,8 @@ Este proyecto está licenciado bajo la Licencia MIT - mira el archivo [LICENSE](
 - [Bootstrapping](https://en.wikipedia.org/wiki/Bootstrapping_(statistics))
 
 Este README proporciona una guía completa y clara sobre cómo usar la clase `EstimacionBootstrapping`, asegurando que cualquier usuario pueda entender rápidamente cómo funciona el script y cómo aplicarlo a sus propios datos.
+
+
+## Enlace al Proyecto
+
+Puedes encontrar el proyecto [aquí](https://github.com/Steff-Montero/Proyecto-personal/).
