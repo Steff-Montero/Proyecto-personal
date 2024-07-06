@@ -74,6 +74,9 @@ estimador.evaluacion_bootstrap(iteraciones=1000)
 - Realiza predicciones y muestra resultados de precisión, matriz de confusión e informe de clasificación
 - Estima el error del modelo usando bootstrapping
 
+## Observaciones
+No se añade una carpeta data, debido a que los datos utilizados como ejemplo en el main son generados desde paquetes.
+
 ## Contribución
 Para contribuir, por favor sigue las siguientes instrucciones:
 
